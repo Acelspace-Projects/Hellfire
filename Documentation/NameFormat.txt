@@ -1,0 +1,5 @@
+Chronologie		:	CH_PROJECT-TEMPLATE.ext
+DossierDeDefinition	:	DD_PROJECT-TEMPLATE.ext
+DossierTechnique	:	DT_PROJECT-TEMPLATE.ext
+RapportDeProjet		:	RP_PROJECT-TEMPLATE.ext
+StabTraj		:	ST-(StabTraj)_PROJECT-TEMPLATE.ext
