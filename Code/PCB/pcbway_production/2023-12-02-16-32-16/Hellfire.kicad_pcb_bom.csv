@@ -1,0 +1,13 @@
+﻿designator,quantity,value,pack,mpn,mount_type
+BJ1,1,~,Jack,,tht
+C1,1,~,Capacitor,,tht
+CB1,1,~,Capacitor Big,,tht
+D5,1,BAV17,D_DO-35_SOD27_P7.62mm_Horizontal,,tht
+"H1, H2, H3, H4",4,~,Via,,tht
+"LED1, LED2, LED3",3,~,LED,,tht
+NE1,1,~,NE556,,tht
+"R1, R2, R3, R4, R5, R6, R7, R8",8,~,Resistor,,tht
+SW1,1,~,Switch,,tht
+TR1,1,~,Transistor,,tht
+TRB1,1,~,Transistor Big,,tht
+VR1,1,~,Variable Resistor,,tht
