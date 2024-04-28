@@ -1,0 +1,12 @@
+Pinout:
+feather - https://learn.adafruit.com/assets/110921
+lsm3dsox/32 - https://learn.adafruit.com/assets/94954
+    |-> wiring - https://learn.adafruit.com/assets/85369
+
+Arduino Setup:
+https://learn.adafruit.com/adafruit-feather-m0-radio-with-lora-radio-module/setup
+https://learn.adafruit.com/adafruit-feather-m0-radio-with-lora-radio-module/using-with-arduino-ide
+Important ! sensor setup -> https://learn.adafruit.com/lsm6dsox-and-ism330dhc-6-dof-imu/arduino
+
+Radio:
+https://learn.adafruit.com/adafruit-feather-m0-radio-with-lora-radio-module/using-the-rfm-9x-radio
