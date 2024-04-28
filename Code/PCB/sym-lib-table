@@ -1,4 +1,0 @@
-(sym_lib_table
-  (version 7)
-  (lib (name "Acelspace")(type "KiCad")(uri "${KIPRJMOD}/Acelspace.kicad_sym")(options "")(descr ""))
-)
