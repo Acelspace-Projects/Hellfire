@@ -10,3 +10,6 @@ Important ! sensor setup -> https://learn.adafruit.com/lsm6dsox-and-ism330dhc-6-
 
 Radio:
 https://learn.adafruit.com/adafruit-feather-m0-radio-with-lora-radio-module/using-the-rfm-9x-radio
+
+Fritzing:
+http://www.neko.ne.jp/~freewing/software/build_fritzing_100_windows/
