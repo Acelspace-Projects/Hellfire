@@ -180,11 +180,11 @@ void loop() {
 
   time = millis();
   if (time - previousTimeGPS >= GPSInterval) {
-    // "GPS";fix;quality;time;date;locationlat;locationlng;speed;angle;altitude;satellites
+    // "GPS";arduinotime;fix;quality;time;date;locationlat;locationlng;speed;angle;altitude;satellites
 
     Serial.print("GPS;");
-    Serial.print((int)GPS.fix);
-    Serial.print(";");
+    Serial.print(millis()); Serial.print(";");
+    Serial.print((int)GPS.fix); Serial.print(";");
     Serial.print((int)GPS.fixquality);
     if (GPS.fix) {
       Serial.print(";");
@@ -228,7 +228,7 @@ void loop() {
 
   time = millis();
   if (time - previousTimeLSM >= LSMInterval) {
-    // "IMU";temp;ax;ay;az;gx;gy;gz
+    // "IMU";time;temp;ax;ay;az;gx;gy;gz
 
     sensors_event_t accel;
     sensors_event_t gyro;
@@ -237,6 +237,7 @@ void loop() {
 
     #ifdef DEBUG
     Serial.print("IMU;");
+    Serial.print(millis()); Serial.print(";"); // ms
     Serial.print(temp.temperature); Serial.print(";"); // °C
 
     Serial.print(accel.acceleration.x); Serial.print(";"); // m.s^-2
