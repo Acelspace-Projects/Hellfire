@@ -1,6 +1,5 @@
 #include <RadioLib.h>
 
-// Wireless Tracker has the following connections:
 #define RADIO_DIO_1             14
 #define RADIO_NSS               8
 #define RADIO_RESET             12
@@ -10,8 +9,13 @@ SX1262 radio = new Module(RADIO_NSS, RADIO_DIO_1, RADIO_RESET, RADIO_BUSY);
 #define FREQUENCY               869.5 //MHz
 #define TX_POWER                5 //dBm
 
+volatile bool receivedFlag = false;
+  #if defined(ESP8266) || defined(ESP32)
+    ICACHE_RAM_ATTR
+  #endif
+
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);
   while (!Serial);
 
   int state = radio.begin(FREQUENCY, 125., 9, 7, 18, TX_POWER);
@@ -39,15 +43,7 @@ void setup() {
 }
 
 // flag to indicate that a packet was received
-volatile bool receivedFlag = false;
 
-// this function is called when a complete packet
-// is received by the module
-// IMPORTANT: this function MUST be 'void' type
-//            and MUST NOT have any arguments!
-#if defined(ESP8266) || defined(ESP32)
-  ICACHE_RAM_ATTR
-#endif
 void setFlag(void) {
   // we got a packet, set the flag
   receivedFlag = true;
@@ -71,27 +67,27 @@ void loop() {
     */
 
     if (state == RADIOLIB_ERR_NONE) {
-      // packet was successfully received
-      Serial.println(F("[SX1262] Received packet!"));
+      infoString
+      
 
-      // print data of the packet
-      Serial.print(F("[SX1262] Data:\t\t"));
-      Serial.println(str);
+      // // print data of the packet
+      // Serial.print(F("[SX1262] Data:\t\t"));
+      Serial.print(str);
 
-      // print RSSI (Received Signal Strength Indicator)
-      Serial.print(F("[SX1262] RSSI:\t\t"));
-      Serial.print(radio.getRSSI());
-      Serial.println(F(" dBm"));
+      // // print RSSI (Received Signal Strength Indicator)
+      // Serial.print(F("[SX1262] RSSI:\t\t"));
+      // Serial.print(radio.getRSSI());
+      // Serial.println(F(" dBm"));
 
-      // print SNR (Signal-to-Noise Ratio)
-      Serial.print(F("[SX1262] SNR:\t\t"));
-      Serial.print(radio.getSNR());
-      Serial.println(F(" dB"));
+      // // print SNR (Signal-to-Noise Ratio)
+      // Serial.print(F("[SX1262] SNR:\t\t"));
+      // Serial.print(radio.getSNR());
+      // Serial.println(F(" dB"));
 
-      // print frequency error
-      Serial.print(F("[SX1262] Frequency error:\t"));
-      Serial.print(radio.getFrequencyError());
-      Serial.println(F(" Hz"));
+      // // print frequency error
+      // Serial.print(F("[SX1262] Frequency error:\t"));
+      // Serial.print(radio.getFrequencyError());
+      // Serial.println(F(" Hz"));
 
     } else if (state == RADIOLIB_ERR_CRC_MISMATCH) {
       // packet was received, but is malformed
