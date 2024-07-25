@@ -22,8 +22,9 @@
 #define LSM_CHIP_SELECT   5
 #define VGNSS_CTRL        3
 #define DELAY_MESURE      20
-#define FREQUENCY         869.5 //MHz
-#define TX_POWER          5 //dBm
+#define FREQUENCY         869.138 //MHz
+#define BANDWIDTH         125. //KHz
+#define TX_POWER          20 //dBm
 
 TinyGPSPlus GPS;
 // Adafruit_LSM6DSOX sox;
@@ -35,7 +36,7 @@ String dataString;
 // String radioString;
 
 void init_radio() {
-  int state = radio.begin(FREQUENCY, 125., 9, 7, 18, TX_POWER);
+  int state = radio.begin(FREQUENCY, BANDWIDTH, 9, 7, 18, TX_POWER);
   if (state != RADIOLIB_ERR_NONE) {
     PRINT("Lora init failed with error code : ");
     PRINT(state); PRINT("\n");

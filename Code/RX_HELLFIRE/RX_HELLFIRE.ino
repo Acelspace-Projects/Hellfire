@@ -15,7 +15,7 @@
 #define RADIO_RESET             12
 #define RADIO_BUSY              13
 #define SD_CHIP_SELECT          45
-#define FREQUENCY               869.5 //MHz
+#define FREQUENCY               869.138 //MHz
 #define TX_POWER                5 //dBm
 
 SX1262 radio = new Module(RADIO_NSS, RADIO_DIO_1, RADIO_RESET, RADIO_BUSY);

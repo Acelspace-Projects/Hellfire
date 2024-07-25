@@ -74,6 +74,6 @@ void loop() {
 
     ++count;
     ++flushCount;
-    prev_mes_timestamp += 10;
+    prev_mes_timestamp += DELAY_MESURE_TENSIO;
   }
 }
