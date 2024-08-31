@@ -20,7 +20,7 @@ def TENSIO():
         # fig.tight_layout()
         fig.savefig("./TRAITE/TENSIO-ZOOM"+str(zoomlvl)+".svg")
 
-    t_brut,tens_brut=np.loadtxt("./TRAITE/TENSIO.TXT", delimiter=";", usecols=[0,1], unpack=True)
+    t_brut,tens_brut=np.loadtxt("./DATA/TENSIO.TXT", delimiter=";", usecols=[0,1], unpack=True)
     tensioCal = lambda x: 2E-7*(x**3)-4E-4*(x**2)+0.295*x+3.0096
 
     graphTens(t_brut,tens_brut,tensioCal,0)
@@ -45,7 +45,7 @@ def BMP():
         # fig2.tight_layout()
         fig2.savefig("./TRAITE/BMP-ZOOM"+str(zoomlvl)+".svg")
 
-    t_brut,bmp_brut=np.genfromtxt("./TRAITE/TENSIO.TXT", delimiter=";", usecols=[0,2], unpack=True, invalid_raise=False)
+    t_brut,bmp_brut=np.genfromtxt("./DATA/TENSIO.TXT", delimiter=";", usecols=[0,2], unpack=True, invalid_raise=False)
     p0=bmp_brut[3450]; g=9.81 ; Cp=1006; T0=30+273.15
     bmpCal = lambda p: ((2*Cp*T0)/(7*g))*np.log(p0/p)
 
@@ -56,7 +56,7 @@ def BMP():
     graphBmp(t_z2,bmp_z2,bmpCal,2)
 
 def IMU():
-    t,temp,ax,ay,az,gx,gy,gz,mx,my,mz=np.loadtxt("./TRAITE/IMU.TXT", delimiter=";", unpack=True)
+    t,temp,ax,ay,az,gx,gy,gz,mx,my,mz=np.loadtxt("./DATA/IMU-FIXED.TXT", delimiter=";", unpack=True)
     # deb=0;fin=-1
     # deb=167000;fin=179000 # zoom vol
     deb=167950;fin=178500 # zoom simu
@@ -84,27 +84,32 @@ def IMU():
     vGlobal=np.array([np.array([0.0,0.0,0.0]) for i in range(len(t))])
     angleSelf=np.array([np.array([0.0,0.0,0.0]) for i in range(len(t))])
     wSelf=np.array([np.array([0.0,0.0,0.0]) for i in range(len(t))])
-    a=np.array([np.array([ax[i],ay[i],az[i]]) for i in range(len(t))]);wDotSelf=np.array([np.array([gx[i],gy[i],gz[i]]) for i in range(len(t))])
+    a=np.array([np.array([ay[i],az[i],ax[i]]) for i in range(len(t))]);wDotSelf=np.array([np.array([gy[i],gz[i],gx[i]]) for i in range(len(t))])
     
-    m=7.8 # Masse totale de la fusée (en kg)
-    theta=45 # Angle de lancer de la fusée (en deg)
-    elevation=80 # Angle d'élévation de la rampe (en deg)
-    phi=90-elevation
-    theta=theta*np.pi/180
-    phi=phi*np.pi/180
+    # theta=45 # Angle de lancer de la fusée (en deg)
+    # elevation=80 # Angle d'élévation de la rampe (en deg)
+    # phi=90-elevation
+    # theta=theta*np.pi/180
+    # phi=phi*np.pi/180
 
     def Euler_SingleStep(xDot,xi):
         xf=xi+xDot*h
         return xf
 
     def acceleration():
+        # https://fr.wikipedia.org/wiki/Angles_d%27Euler
+
+        # print("CALC")
         axSelf=a[i,0];aySelf=a[i,1];azSelf=a[i,2]
+        aSelf=np.array([axSelf,aySelf,azSelf])
         anglexSelf=angleSelf[i+1,0];angleySelf=angleSelf[i+1,1];anglezSelf=angleSelf[i+1,2]
-        psi=anglezSelf;theta=anglexSelf;phi=angleySelf
-        #
-        # A REMPLIR
-        #
-        accel=np.array([axSelf,aySelf,azSelf])
+        psi=anglezSelf;theta=angleySelf;phi=anglexSelf
+        Matrix=[[np.cos(psi)*np.cos(phi)-np.sin(psi)*np.cos(theta)*np.sin(phi), -np.cos(psi)*np.sin(phi)-np.sin(psi)*np.cos(theta)*np.cos(phi), np.sin(psi)*np.sin(theta)],
+                [np.sin(psi)*np.cos(phi)+np.cos(psi)*np.cos(theta)*np.sin(phi), -np.sin(psi)*np.sin(phi)+np.cos(psi)*np.cos(theta)*np.cos(phi), -np.cos(psi)*np.sin(theta)],
+                [np.sin(theta)*np.sin(phi),                                     np.sin(theta)*np.cos(phi),                                      np.cos(theta)]]
+        P=np.array(Matrix)
+        # accel=np.array([axSelf,aySelf,azSelf])
+        accel=np.matmul(P,aSelf)
         return accel
 
     time=0
@@ -143,9 +148,9 @@ def IMU():
     vit.set_title("Valeurs de Simulation")
     vit.set_xlabel("Temps (ms)")
     vit.set_ylabel("Vitesse (m.s-1)")
-    # vit.plot(t,wx,label="wx")
-    # vit.plot(t,wy,label="wy")
-    # vit.plot(t,wz,label="wz")
+    vit.plot(t,wx,label="wx")
+    vit.plot(t,wy,label="wy")
+    vit.plot(t,wz,label="wz")
     vit.plot(t,vx,label="vx")
     vit.plot(t,vy,label="vy")
     vit.plot(t,vz,label="vz")
@@ -153,6 +158,20 @@ def IMU():
     vit.legend()
     # fig5.tight_layout()
     fig5.savefig("./TRAITE/TRAJ2.svg")
+
+    # Export des données
+    export=""
+    for r in range(len(t)):
+        for i in trajecto[r]:
+            export+=str(i)+";"
+        for i in angleSelf[r][:-1]:
+            export+=str(i)+";"
+        export+=str(angleSelf[r][-1])+"\n"
+
+    f = open("./TRAITE/VOL-BLEND.txt", "w")
+    f.write(export)
+    f.close()
+    print("Saved")
 
 decollageTensio=1752882
 decollageImu=1680060
