@@ -1,9 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-import os
-os.chdir("C:/Users/Mixcraftio/Code/Repos/Hellfire/Resultats-Analyse")
-
 def TENSIO():
     def graphTens(t,tens,cal,zoomlvl):
         fig,tensio=plt.subplots()
@@ -49,11 +46,31 @@ def BMP():
     p0=bmp_brut[3450]; g=9.81 ; Cp=1006; T0=30+273.15
     bmpCal = lambda p: ((2*Cp*T0)/(7*g))*np.log(p0/p)
 
-    graphBmp(t_brut,bmp_brut,bmpCal,0)
+    # graphBmp(t_brut,bmp_brut,bmpCal,0)
     t_z1=t_brut[1000:10000];bmp_z1=bmp_brut[1000:10000] # zoom 1
-    graphBmp(t_z1,bmp_z1,bmpCal,1)
+    # graphBmp(t_z1,bmp_z1,bmpCal,1)
     t_z2=t_brut[3450:3750]-decollageTensio;bmp_z2=bmp_brut[3450:3750] # zoom vol
-    graphBmp(t_z2,bmp_z2,bmpCal,2)
+    # graphBmp(t_z2,bmp_z2,bmpCal,2)
+
+    calib=bmpCal(bmp_z2)
+    vit=[(calib[i+1] - calib[i])/(t_z2[i+1] - t_z2[i])*1e3 for i in range(len(calib)-1)]
+    montee=t_brut[3500:3542]-decollageTensio;calib_montee=bmpCal(bmp_brut[3500:3542])
+    vit_montee=[(calib_montee[i+1] - calib_montee[i])/(montee[i+1] - montee[i])*1e3 for i in range(len(calib_montee)-1)]
+    descente=t_brut[3538:3720]-decollageTensio;calib_descente=bmpCal(bmp_brut[3538:3720])
+    vit_descente=[(calib_descente[i+1] - calib_descente[i])/(descente[i+1] - descente[i])*1e3 for i in range(len(calib_descente)-1)]
+    reg=np.polyfit(descente[:-1], vit_descente,1)
+    print("\nVitesse moyenne de descente: " + str(np.mean(reg[0]*descente[:-1]+reg[1])) + " m.s-1")
+
+    fig3,vites=plt.subplots()
+    vites.set_title("Vitesse calculée des données du BMP180")
+    vites.set_xlabel("Temps (ms)")
+    vites.set_ylabel("Vitesse (m.s-1)")
+    vites.plot(t_z2[:-1],vit, label="Vitesse calculée")
+    vites.plot(descente[:-1], reg[0]*descente[:-1]+reg[1], label="Regression de la vitesse de descente")
+    vites.set_ylim((-40,200))
+    vites.grid()
+    vites.legend()
+    fig3.savefig("./TRAITE/BMP-VIT.svg")
 
 def IMU():
     t,temp,ax,ay,az,gx,gy,gz,mx,my,mz=np.loadtxt("./DATA/IMU-FIXED.TXT", delimiter=";", unpack=True)
@@ -65,7 +82,7 @@ def IMU():
     ax=ax[deb:fin];ay=ay[deb:fin];az=az[deb:fin]
     gx=gx[deb:fin];gy=gy[deb:fin];gz=gz[deb:fin]
 
-    fig3,accel=plt.subplots()
+    fig4,accel=plt.subplots()
     accel.set_title("Valeurs de l'IMU")
     accel.set_xlabel("Temps (ms)")
     accel.set_ylabel("Accélération (m.s-2)")
@@ -77,8 +94,8 @@ def IMU():
     # accel.plot(t,gz,label="gz")
     accel.grid()
     accel.legend()
-    # fig3.tight_layout()
-    fig3.savefig("./TRAITE/IMU.svg")
+    # fig4.tight_layout()
+    fig4.savefig("./TRAITE/IMU.svg")
 
     trajecto=np.array([np.array([0.0,0.0,0.0]) for i in range(len(t))])
     vGlobal=np.array([np.array([0.0,0.0,0.0]) for i in range(len(t))])
@@ -129,14 +146,14 @@ def IMU():
     x=np.array([trajecto[i,0] for i in range(len(t))])
     y=np.array([trajecto[i,1] for i in range(len(t))])
     z=np.array([trajecto[i,2] for i in range(len(t))])
-    fig4=plt.figure()
-    traj=fig4.add_subplot(projection='3d')
+    fig5=plt.figure()
+    traj=fig5.add_subplot(projection='3d')
     traj.set_title("Trajectographie")
     traj.plot3D(x,y,z,"r")
     traj.set_xlabel('x')
     traj.set_ylabel('y')
     traj.set_zlabel('z')
-    fig4.savefig("./TRAITE/TRAJ.svg")
+    fig5.savefig("./TRAITE/TRAJ.svg")
 
     wx=np.array([wSelf[i,0] for i in range(len(t))])
     wy=np.array([wSelf[i,1] for i in range(len(t))])
@@ -176,6 +193,6 @@ def IMU():
 decollageTensio=1752882
 decollageImu=1680060
 # TENSIO()
-# BMP()
-IMU()
+BMP()
+# IMU()
 # plt.show()

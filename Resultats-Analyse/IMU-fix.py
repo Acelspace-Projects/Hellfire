@@ -1,6 +1,3 @@
-import os
-os.chdir("C:/Users/Mixcraftio/Code/Repos/Hellfire/Resultats-Analyse")
-
 f=open("./DATA/IMU.TXT")
 text=f.read()
 ntext=""
@@ -28,5 +25,5 @@ for c in text:
     elif count>=0:
       count-=1
   
-f2=open("./TRAITE/IMU-FIXED.TXT","w")
+f2=open("./DATA/IMU-FIXED.TXT","w")
 f2.write(ntext)
