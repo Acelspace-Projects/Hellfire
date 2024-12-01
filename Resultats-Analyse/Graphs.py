@@ -68,7 +68,7 @@ def BMP():
     vites.set_ylabel("Vitesse (m.s-1)")
     vites.plot(t_z2[:-1],vit, label="Vitesse calculée")
     vites.plot(descente[:-1], reg[0]*descente[:-1]+reg[1], label="Regression de la vitesse de descente")
-    vites.set_ylim((-40,200))
+    vites.set_ylim((-50,200))
     vites.grid()
     vites.legend()
     fig3.savefig("./TRAITE/BMP-VIT.svg")
