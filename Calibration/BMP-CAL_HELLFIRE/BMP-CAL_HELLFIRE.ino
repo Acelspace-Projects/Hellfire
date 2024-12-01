@@ -15,7 +15,8 @@ Adafruit_BMP085 bmp;
 
 uint32_t timestamp;
 uint32_t prev_mes_timestamp;
-uint16_t pressVal;
+int16_t pressVal;
+int16_t tempVal;
 
 void setup() {
   Serial.begin(115200);
@@ -37,10 +38,13 @@ void loop() {
   timestamp = millis();
   if ((timestamp - prev_mes_timestamp) >= DELAY_MESURE) {
     pressVal = bmp.readRawPressure();
+    tempVal = bmp.readRawTemperature();
 
     PRINT(timestamp);
     PRINT("\t");
     PRINT(pressVal);
+    PRINT("\t");
+    PRINT(tempVal);
     PRINT("\n");
     prev_mes_timestamp += DELAY_MESURE;
   }

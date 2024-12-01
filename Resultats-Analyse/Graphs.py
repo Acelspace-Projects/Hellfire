@@ -43,20 +43,21 @@ def BMP():
         fig2.savefig("./TRAITE/BMP-ZOOM"+str(zoomlvl)+".svg")
 
     t_brut,bmp_brut=np.genfromtxt("./DATA/TENSIO.TXT", delimiter=";", usecols=[0,2], unpack=True, invalid_raise=False)
-    p0=bmp_brut[3450]; g=9.81 ; Cp=1006; T0=30+273.15
-    bmpCal = lambda p: ((2*Cp*T0)/(7*g))*np.log(p0/p)
+    p0=bmp_brut[3450]; g=9.81; Cp=1006; T0=30+273.15; R=8.314; M=29e-3
+    # altitude = lambda p: ((2*Cp*T0)/(7*g))*np.log(p0/p)
+    altitude = lambda p: -((R*T0)/(M*g))*np.log(p/p0)
 
-    # graphBmp(t_brut,bmp_brut,bmpCal,0)
+    graphBmp(t_brut,bmp_brut,altitude,0)
     t_z1=t_brut[1000:10000];bmp_z1=bmp_brut[1000:10000] # zoom 1
-    # graphBmp(t_z1,bmp_z1,bmpCal,1)
+    graphBmp(t_z1,bmp_z1,altitude,1)
     t_z2=t_brut[3450:3750]-decollageTensio;bmp_z2=bmp_brut[3450:3750] # zoom vol
-    # graphBmp(t_z2,bmp_z2,bmpCal,2)
+    graphBmp(t_z2,bmp_z2,altitude,2)
 
-    calib=bmpCal(bmp_z2)
+    calib=altitude(bmp_z2)
     vit=[(calib[i+1] - calib[i])/(t_z2[i+1] - t_z2[i])*1e3 for i in range(len(calib)-1)]
-    montee=t_brut[3500:3542]-decollageTensio;calib_montee=bmpCal(bmp_brut[3500:3542])
+    montee=t_brut[3500:3542]-decollageTensio;calib_montee=altitude(bmp_brut[3500:3542])
     vit_montee=[(calib_montee[i+1] - calib_montee[i])/(montee[i+1] - montee[i])*1e3 for i in range(len(calib_montee)-1)]
-    descente=t_brut[3538:3720]-decollageTensio;calib_descente=bmpCal(bmp_brut[3538:3720])
+    descente=t_brut[3538:3720]-decollageTensio;calib_descente=altitude(bmp_brut[3538:3720])
     vit_descente=[(calib_descente[i+1] - calib_descente[i])/(descente[i+1] - descente[i])*1e3 for i in range(len(calib_descente)-1)]
     reg=np.polyfit(descente[:-1], vit_descente,1)
     print("\nVitesse moyenne de descente: " + str(np.mean(reg[0]*descente[:-1]+reg[1])) + " m.s-1")
