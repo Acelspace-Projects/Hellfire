@@ -4,7 +4,7 @@ import numpy as np
 def TENSIO():
     def graphTens(t,tens,cal,zoomlvl):
         fig,tensio=plt.subplots()
-        tensio.set_title("Valeurs du Tensionomètre")
+        tensio.set_title("Données du Tensionomètre")
         tensio.set_xlabel("Temps (ms)")
         color="tab:blue"
         tensio.set_ylabel("Valeur brute (0-1023)", color=color)
@@ -29,10 +29,10 @@ def TENSIO():
 def BMP():
     def graphBmp(t,bm,cal,zoomlvl):
         fig2,bmp=plt.subplots()
-        bmp.set_title("Valeurs du BMP180")
+        bmp.set_title("Données du BMP180")
         bmp.set_xlabel("Temps (ms)")
         color="tab:blue"
-        bmp.set_ylabel("Valeur brute", color=color)
+        bmp.set_ylabel("Valeur brute (Pa)", color=color)
         bmp.plot(t, bm, "--", color=color)
         bmp2 = bmp.twinx()
         color2="tab:red"
@@ -86,7 +86,7 @@ def IMU():
     gx=gx[deb:fin];gy=gy[deb:fin];gz=gz[deb:fin]
 
     fig4,accel=plt.subplots()
-    accel.set_title("Valeurs de l'IMU")
+    accel.set_title("Données brutes de l'IMU")
     accel.set_xlabel("Temps (ms)")
     accel.set_ylabel("Accélération (m.s-2)")
     accel.plot(t,ax,label="ax")
@@ -165,7 +165,7 @@ def IMU():
     vy=np.array([vGlobal[i,1] for i in range(len(t))])
     vz=np.array([vGlobal[i,2] for i in range(len(t))])
     fig5,vit=plt.subplots()
-    vit.set_title("Valeurs de Simulation")
+    vit.set_title("Données du LSM6DSOX")
     vit.set_xlabel("Temps (ms)")
     vit.set_ylabel("Vitesse (m.s-1)")
     vit.plot(t,wx,label="wx")
@@ -196,6 +196,6 @@ def IMU():
 decollageTensio=1752882
 decollageImu=1680060
 # TENSIO()
-BMP()
-# IMU()
-# plt.show()
+# BMP()
+IMU()
+plt.show()
