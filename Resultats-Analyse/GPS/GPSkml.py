@@ -2,8 +2,8 @@ import numpy as np
 import simplekml
 
 kml = simplekml.Kml()
-n=np.loadtxt("./DATA/GPS.TXT", delimiter=";", dtype=str, usecols=(0), unpack=True)
-lat,long=np.loadtxt("./DATA/GPS.TXT", delimiter=";", usecols=(1,2), unpack=True)
+n=np.loadtxt("../DATA/GPS.TXT", delimiter=";", dtype=str, usecols=(0), unpack=True)
+lat,long=np.loadtxt("../DATA/GPS.TXT", delimiter=";", usecols=(1,2), unpack=True)
 
 points=[]
 for i in range(len(n)):
