@@ -1,5 +1,6 @@
-import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
 
 decollageTensio=1752882
 
@@ -18,7 +19,10 @@ def graphTens(t,tens,cal,zoomlvl):
     # fig.tight_layout()
     fig.savefig("./OUT/TENSIO-ZOOM"+str(zoomlvl)+".svg")
 
-t_brut,tens_brut=np.loadtxt("../DATA/TENSIO.TXT", delimiter=";", usecols=[0,1], unpack=True)
+# t_brut,tens_brut=np.loadtxt("../DATA/TENSIO.TXT", delimiter=";", usecols=[0,1], unpack=True)
+df = pd.read_csv("../DATA/TENSIO.TXT", sep=";", usecols=[0, 1], engine="python")
+df = df.dropna()
+t_brut, tens_brut = df.iloc[:, 0].values, df.iloc[:, 1].values
 tensioCal = lambda x: 2E-7*(x**3)-4E-4*(x**2)+0.295*x+3.0096
 
 graphTens(t_brut,tens_brut,tensioCal,0)

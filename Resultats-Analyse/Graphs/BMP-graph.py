@@ -1,5 +1,6 @@
-import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
 
 decollageTensio=1752882
 
@@ -18,7 +19,10 @@ def graphBmp(t,bm,cal,zoomlvl):
     # fig2.tight_layout()
     fig2.savefig("./OUT/BMP-ZOOM"+str(zoomlvl)+".svg")
 
-t_brut,bmp_brut=np.genfromtxt("../DATA/TENSIO.TXT", delimiter=";", usecols=[0,2], unpack=True, invalid_raise=False)
+# t_brut,bmp_brut=np.genfromtxt("../DATA/TENSIO.TXT", delimiter=";", usecols=[0,2], unpack=True, invalid_raise=False)
+df = pd.read_csv("../DATA/TENSIO.TXT", sep=";", usecols=[0, 2], engine="python")
+df = df.dropna()
+t_brut, bmp_brut = df.iloc[:, 0].values, df.iloc[:, 1].values
 p0=bmp_brut[3450]; g=9.81; Cp=1006; T0=30+273.15; R=8.314; M=29e-3
 # altitude = lambda p: ((2*Cp*T0)/(7*g))*np.log(p0/p)
 altitude = lambda p: -((R*T0)/(M*g))*np.log(p/p0)

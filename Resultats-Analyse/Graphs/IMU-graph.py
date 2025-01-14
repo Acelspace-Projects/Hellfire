@@ -1,9 +1,13 @@
-import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
 
 decollageImu=1680060
 
-t,temp,ax,ay,az,gx,gy,gz,mx,my,mz=np.loadtxt("../DATA/IMU-FIXED.TXT", delimiter=";", unpack=True)
+# t,temp,ax,ay,az,gx,gy,gz,mx,my,mz=np.loadtxt("../DATA/IMU-FIXED.TXT", delimiter=";", unpack=True)
+df = pd.read_csv("../DATA/IMU-FIXED.TXT", sep=";", engine="python")
+df = df.dropna()
+t,temp,ax,ay,az,gx,gy,gz,mx,my,mz = df.iloc[:, 0].values, df.iloc[:, 1].values, df.iloc[:, 2].values, df.iloc[:, 3].values, df.iloc[:, 4].values, df.iloc[:, 5].values, df.iloc[:, 6].values, df.iloc[:, 7].values, df.iloc[:, 8].values, df.iloc[:, 9].values, df.iloc[:, 10].values
 deb=0;fin=-1
 # deb=167000;fin=179000 # zoom vol
 # deb=167950;fin=178500 # zoom simu
@@ -12,7 +16,7 @@ t=t[deb:fin]-decollageImu
 ax=ax[deb:fin];ay=ay[deb:fin];az=az[deb:fin]
 gx=gx[deb:fin];gy=gy[deb:fin];gz=gz[deb:fin]
 
-fig4,accel=plt.subplots()
+fig,accel=plt.subplots()
 accel.set_title("Données brutes de l'IMU")
 accel.set_xlabel("Temps (ms)")
 accel.set_ylabel("Accélération (m.s-2)")
@@ -24,8 +28,8 @@ accel.plot(t,az,label="az")
 # accel.plot(t,gz,label="gz")
 accel.grid()
 accel.legend()
-# fig4.tight_layout()
-fig4.savefig("./OUT/IMU.svg")
+# fig.tight_layout()
+fig.savefig("./OUT/IMU.svg")
 
 trajecto=np.array([np.array([0.0,0.0,0.0]) for i in range(len(t))])
 vGlobal=np.array([np.array([0.0,0.0,0.0]) for i in range(len(t))])
@@ -76,14 +80,15 @@ for i in range(len(t)-1):
 x=np.array([trajecto[i,0] for i in range(len(t))])
 y=np.array([trajecto[i,1] for i in range(len(t))])
 z=np.array([trajecto[i,2] for i in range(len(t))])
-fig5=plt.figure()
-traj=fig5.add_subplot(projection='3d')
+
+fig2=plt.figure()
+traj=fig2.add_subplot(projection='3d')
 traj.set_title("Trajectographie")
 traj.plot3D(x,y,z)
 traj.set_xlabel('x')
 traj.set_ylabel('y')
 traj.set_zlabel('z')
-fig5.savefig("./OUT/TRAJ.svg")
+fig2.savefig("./OUT/TRAJ.svg")
 
 wx=np.array([wSelf[i,0] for i in range(len(t))])
 wy=np.array([wSelf[i,1] for i in range(len(t))])
@@ -91,7 +96,7 @@ wz=np.array([wSelf[i,2] for i in range(len(t))])
 vx=np.array([vGlobal[i,0] for i in range(len(t))])
 vy=np.array([vGlobal[i,1] for i in range(len(t))])
 vz=np.array([vGlobal[i,2] for i in range(len(t))])
-fig5,vit=plt.subplots()
+fig2,vit=plt.subplots()
 vit.set_title("Données du LSM6DSOX")
 vit.set_xlabel("Temps (ms)")
 vit.set_ylabel("Vitesse (m.s-1)")
@@ -103,8 +108,8 @@ vit.plot(t,vy,label="vy")
 vit.plot(t,vz,label="vz")
 vit.grid()
 vit.legend()
-# fig5.tight_layout()
-fig5.savefig("./OUT/TRAJ2.svg")
+# fig2.tight_layout()
+fig2.savefig("./OUT/TRAJ2.svg")
 
 # Export des données
 export=""
