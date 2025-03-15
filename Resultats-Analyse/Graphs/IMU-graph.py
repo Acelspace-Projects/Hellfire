@@ -5,7 +5,7 @@ decollageImu=1680060
 
 t,temp,ax,ay,az,gx,gy,gz,mx,my,mz=np.loadtxt("../DATA/IMU-FIXED.TXT", delimiter=";", unpack=True)
 deb=0;fin=-1
-# deb=167000;fin=179000 # zoom vol
+deb=167000;fin=179000 # zoom vol
 # deb=167950;fin=178500 # zoom simu
 # deb=167950;fin=170000 # zoom poussee et un peu plus
 t=t[deb:fin]-decollageImu
@@ -16,9 +16,9 @@ fig4,accel=plt.subplots()
 accel.set_title("Données brutes de l'IMU")
 accel.set_xlabel("Temps (ms)")
 accel.set_ylabel("Accélération (m.s-2)")
-accel.plot(t,ax,label="ax")
+# accel.plot(t,ax,label="ax")
 accel.plot(t,ay,label="ay")
-accel.plot(t,az,label="az")
+# accel.plot(t,az,label="az")
 # accel.plot(t,gx,label="gx")
 # accel.plot(t,gy,label="gy")
 # accel.plot(t,gz,label="gz")
@@ -26,6 +26,19 @@ accel.grid()
 accel.legend()
 # fig4.tight_layout()
 fig4.savefig("./OUT/IMU.svg")
+
+mIt=5
+tmoy=[t[mIt*i] for i in range(len(t)//mIt)]
+axmoy=[np.mean([ax[mIt*i],ax[mIt*i+1],ax[mIt*i+2]]) for i in range(len(ax)//mIt)]
+aymoy=[np.mean([ay[mIt*i],ay[mIt*i+1],ay[mIt*i+2]]) for i in range(len(ay)//mIt)]
+azmoy=[np.mean([az[mIt*i],az[mIt*i+1],az[mIt*i+2]]) for i in range(len(az)//mIt)]
+figmoy, moymoy = plt.subplots()
+# moymoy.plot(tmoy,axmoy,label="axmoy")
+moymoy.plot(tmoy,aymoy,label="aymoy")
+# moymoy.plot(tmoy,azmoy,label="azmoy")
+moymoy.grid()
+moymoy.legend()
+figmoy.savefig("./OUT/MOY.svg")
 
 trajecto=np.array([np.array([0.0,0.0,0.0]) for i in range(len(t))])
 vGlobal=np.array([np.array([0.0,0.0,0.0]) for i in range(len(t))])
@@ -55,6 +68,9 @@ def acceleration():
     Matrix=[[np.cos(psi)*np.cos(phi)-np.sin(psi)*np.cos(theta)*np.sin(phi), -np.cos(psi)*np.sin(phi)-np.sin(psi)*np.cos(theta)*np.cos(phi), np.sin(psi)*np.sin(theta)],
             [np.sin(psi)*np.cos(phi)+np.cos(psi)*np.cos(theta)*np.sin(phi), -np.sin(psi)*np.sin(phi)+np.cos(psi)*np.cos(theta)*np.cos(phi), -np.cos(psi)*np.sin(theta)],
             [np.sin(theta)*np.sin(phi),                                     np.sin(theta)*np.cos(phi),                                      np.cos(theta)]]
+    # Matrix=[[],
+    #         [],
+    #         []]
     P=np.array(Matrix)
     # accel=np.array([axSelf,aySelf,azSelf])
     accel=np.matmul(P,aSelf)
