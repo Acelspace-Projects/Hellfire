@@ -30,7 +30,7 @@ void setup() {
   Serial.println("Setup done!");
   prev_mes_timestamp = millis();
 
-  String caldat = bmp.retCalDat();
+  String caldat = bmp.returnCalData();
   Serial.println(caldat);
 }
 
@@ -47,5 +47,7 @@ void loop() {
     PRINT(tempVal);
     PRINT("\n");
     prev_mes_timestamp += DELAY_MESURE;
+    // String caldat = bmp.returnCalData();
+    // Serial.println(caldat);
   }
 }

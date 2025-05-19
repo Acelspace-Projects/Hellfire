@@ -4,6 +4,16 @@ import matplotlib.pyplot as plt
 
 decollageTensio=1752882
 
+# t_brut,bmp_brut=np.genfromtxt("../DATA/TENSIO-TRIM.TXT", delimiter=";", usecols=[0,2], unpack=True, invalid_raise=False)
+df = pd.read_csv("../DATA/TENSIO-TRIM.TXT", sep=";", usecols=[0, 2], engine="python")
+df = df.dropna()
+t_brut, bmp_brut = df.iloc[:, 0].values, df.iloc[:, 1].values
+p0=bmp_brut[3450]; g=9.81; Cp=1006; T0=30+273.15; R=8.314; M=29e-3
+# altitude = lambda p: ((2*Cp*T0)/(7*g))*np.log(p0/p)
+altitude = lambda p: -((R*T0)/(M*g))*np.log(p/p0)
+
+
+
 def graphBmp(t,bm,cal,zoomlvl):
     fig2,bmp=plt.subplots()
     bmp.set_title("Données du BMP180")
@@ -19,19 +29,12 @@ def graphBmp(t,bm,cal,zoomlvl):
     # fig2.tight_layout()
     fig2.savefig("./OUT/BMP-ZOOM"+str(zoomlvl)+".svg")
 
-# t_brut,bmp_brut=np.genfromtxt("../DATA/TENSIO.TXT", delimiter=";", usecols=[0,2], unpack=True, invalid_raise=False)
-df = pd.read_csv("../DATA/TENSIO.TXT", sep=";", usecols=[0, 2], engine="python")
-df = df.dropna()
-t_brut, bmp_brut = df.iloc[:, 0].values, df.iloc[:, 1].values
-p0=bmp_brut[3450]; g=9.81; Cp=1006; T0=30+273.15; R=8.314; M=29e-3
-# altitude = lambda p: ((2*Cp*T0)/(7*g))*np.log(p0/p)
-altitude = lambda p: -((R*T0)/(M*g))*np.log(p/p0)
-
 graphBmp(t_brut,bmp_brut,altitude,0)
-t_z1=t_brut[1000:10000];bmp_z1=bmp_brut[1000:10000] # zoom 1
-graphBmp(t_z1,bmp_z1,altitude,1)
+
 t_z2=t_brut[3450:3750]-decollageTensio;bmp_z2=bmp_brut[3450:3750] # zoom vol
-graphBmp(t_z2,bmp_z2,altitude,2)
+graphBmp(t_z2,bmp_z2,altitude,1)
+
+
 
 calib=altitude(bmp_z2)
 vit=[(calib[i+1] - calib[i])/(t_z2[i+1] - t_z2[i])*1e3 for i in range(len(calib)-1)]
