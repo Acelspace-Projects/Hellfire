@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 
-// BMP085 Calibration Values
+// Données de calibration du BMP180
 int16_t ac1 = 408;
 int16_t ac2 = -72;
 int16_t ac3 = -14383;
@@ -15,12 +15,12 @@ int16_t mb = -32768;
 int16_t mc = -8711;
 int16_t md = 2868;
 
-// Oversampling Setting (OSS), BMP085_ULTRALOWPOWER -> 0
+// Paramètre d'oversampling (OSS), BMP085_ULTRALOWPOWER -> 0
 #define OVERSAMPLING 0
 
-// Compute pressure from UP
+// Calcul de la pression à partir de UP
 int32_t computePressure(int32_t UP) {
-    int32_t T = 250; // Constant temperature in 0.1degrees
+    int32_t T = 250; // Valeur constante de la température en 0.1degrees
     int32_t B5 = (T * 16) - 8; 
 
     int32_t B6 = B5 - 4000;
@@ -50,7 +50,7 @@ int32_t computePressure(int32_t UP) {
     return p;
 }
 
-// Read CSV file, process UP values, and write to output CSV
+// Lecture du fichier CSV, calcul de la pression compensée, et écriture dans le CSV de sortie
 void processCSV(const char *inputFile, const char *outputFile) {
     FILE *input = fopen(inputFile, "r");
     FILE *output = fopen(outputFile, "w");
@@ -64,17 +64,17 @@ void processCSV(const char *inputFile, const char *outputFile) {
 
     char line[100];
 
-    // Read and discard header from input file
+    // Saut du header
     fgets(line, sizeof(line), input);
 
-    // Write new header to output file
+    // Ecriture du nouveau header
     fprintf(output, "timestamp,UP,Pressure (Pa)\n");
 
     while (fgets(line, sizeof(line), input)) {
         uint32_t timestamp;
         int32_t UP;
 
-        // Read timestamp and UP from each line
+        // Lecture de UP, calcul et écriture de la pression
         if (sscanf(line, "%u,%d", &timestamp, &UP) == 2) {
             int32_t pressure = computePressure(UP);
             fprintf(output, "%u,%d,%d\n", timestamp, UP, pressure); // Write to CSV
@@ -83,7 +83,7 @@ void processCSV(const char *inputFile, const char *outputFile) {
 
     fclose(input);
     fclose(output);
-    printf("Processed data written to %s\n", outputFile);
+    printf("Données écrites dans %s\n", outputFile);
 }
 
 int main() {
