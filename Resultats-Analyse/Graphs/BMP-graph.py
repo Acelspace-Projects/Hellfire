@@ -4,8 +4,8 @@ import matplotlib.pyplot as plt
 
 decollageTensio=1752882
 
-# t_brut,bmp_brut=np.genfromtxt("../DATA/TENSIO-TRIM.TXT", delimiter=";", usecols=[0,2], unpack=True, invalid_raise=False)
-df = pd.read_csv("../DATA/TENSIO-TRIM.TXT", sep=";", usecols=[0, 2], engine="python")
+# df = pd.read_csv("../DATA/TENSIO-TRIM.TXT", sep=";", usecols=[0, 2], engine="python")
+df = pd.read_csv("../DATA/bmp-compensated.csv", sep=",", usecols=[0, 2], engine="python")
 df = df.dropna()
 t_brut, bmp_brut = df.iloc[:, 0].values, df.iloc[:, 1].values
 p0=bmp_brut[3450]; g=9.81; Cp=1006; T0=30+273.15; R=8.314; M=29e-3

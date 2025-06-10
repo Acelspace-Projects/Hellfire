@@ -10,5 +10,5 @@ for i in range(len(t_brut)):
     export += str(int(t_brut[i])) + "," + str(int(bmp_brut[i])) + "\n"
 
 # Ecriture dans le fichier
-with open("./bmp-data.csv", "w") as f:
+with open("./bmp-data.csv", "w", encoding="UTF-8") as f:
     f.write(export)

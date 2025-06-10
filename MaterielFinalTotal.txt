@@ -7,6 +7,6 @@
 * https://heltec.org/project/wireless-tracker/ (telem + GPS)
 * https://www.adafruit.com/product/960 (antenna)
 * https://www.adafruit.com/product/851 (antenna adapter)
-* https://www.adafruit.com/product/2796 (microcontrolleur)
+* https://www.adafruit.com/product/2796 (microcontrolleur - adalogger m0)
 * https://www.adafruit.com/product/4565 (lsm6dsox+lis3mdl sensor)
 * https://www.adafruit.com/product/258 (x2 batteries)
